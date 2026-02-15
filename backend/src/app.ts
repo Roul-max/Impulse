@@ -25,11 +25,11 @@ import aiRoutes from "./routes/aiRoutes";
 const app = express();
 
 /* =======================================================
-   ✅ CORS MUST COME FIRST (for cookie authentication)
+   ✅ CORS (MUST BE FIRST)
 ======================================================= */
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // frontend URL
+    origin: process.env.FRONTEND_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
@@ -40,11 +40,10 @@ app.use(
   })
 );
 
-// Handle preflight requests explicitly
 app.options("*", cors());
 
 /* =======================================================
-   ✅ SECURITY (Helmet configured for CORS + cookies)
+   ✅ Security
 ======================================================= */
 app.use(
   helmet({
@@ -53,7 +52,7 @@ app.use(
 );
 
 /* =======================================================
-   ✅ Trace ID Middleware
+   ✅ Request Trace ID
 ======================================================= */
 app.use(
   ((req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
@@ -70,18 +69,20 @@ app.use(
 );
 
 /* =======================================================
-   ✅ Rate Limiting
+   ✅ Rate Limiting (FIXED)
 ======================================================= */
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === "production" ? 500 : 1000,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.path === "/health",
 });
+
 app.use("/api", limiter as any);
 
 /* =======================================================
-   ✅ Standard Middleware
+   ✅ Body Parsing
 ======================================================= */
 app.use(express.json({ limit: "10kb" }) as any);
 app.use(express.urlencoded({ extended: true }) as any);
@@ -94,12 +95,15 @@ app.use(mongoSanitize());
 app.use(compression() as any);
 
 /* =======================================================
-   ✅ Routes
+   ✅ Health Route
 ======================================================= */
 app.get("/health", (req, res) =>
   res.json({ status: "UP", timestamp: new Date() })
 );
 
+/* =======================================================
+   ✅ Routes
+======================================================= */
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
