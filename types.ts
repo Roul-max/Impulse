@@ -5,6 +5,7 @@ export interface Product {
   slug: string;
   description: string;
   price: number;
+  discountedPrice?: number; // ✅ Added to fix Vercel build
   category: { _id: string; name: string; slug: string } | string;
   image: string; // Helper for main image
   images: string[];
@@ -16,7 +17,7 @@ export interface Product {
 }
 
 export interface CartItem {
-  product: Product; // Full product object
+  product: Product;
   quantity: number;
   variant?: {
     size?: string;
@@ -28,7 +29,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
-  role: 'customer' | 'admin';
+  role: "customer" | "admin";
   avatar?: string;
   token?: string; // Optional, often stored in HttpOnly cookie
 }
@@ -71,7 +72,7 @@ export interface Order {
   totalPrice: number;
   isPaid: boolean;
   paidAt?: string;
-  status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+  status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
   deliveredAt?: string;
   createdAt: string;
 }

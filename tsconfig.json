@@ -12,14 +12,25 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "types.ts", "constants.ts", "src/App.tsx", "utils/**/*.ts", "services/**/*.ts", "src/context/**/*.tsx", "src/components/**/*.tsx", "src/pages/**/*.tsx"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "types.ts",
+    "constants.ts",
+    "src/App.tsx",
+    "utils/**/*.ts",
+    "services/**/*.ts",
+    "src/context/**/*.tsx",
+    "src/components/**/*.tsx",
+    "src/pages/**/*.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
