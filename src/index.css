@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   Base Layer
+========================= */
+@layer base {
+
+  html {
+    font-family: theme('fontFamily.body');
+  }
+
+  body {
+    @apply bg-gray-50 text-slate-900 antialiased transition-colors duration-200 selection:bg-accent selection:text-white;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: theme('fontFamily.sans');
+  }
+}
+
+/* =========================
+   Dark Mode Global Styles
+========================= */
+.dark body {
+  background-color: #0f172a; /* dark-bg */
+  color: #f8fafc; /* dark-text */
+}
+
+/* =========================
+   Utilities (From Old CDN HTML)
+========================= */
+@layer utilities {
+
+  /* Scrollbar Hide */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Glass Panel */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Glass Nav */
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .dark .glass-nav {
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
