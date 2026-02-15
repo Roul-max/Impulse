@@ -79,7 +79,7 @@ const limiter = rateLimit({
   skip: (req) => req.path === "/health",
 });
 
-app.use("/api", limiter as any);
+// app.use("/api", limiter as any);
 
 /* =======================================================
    ✅ Body Parsing
