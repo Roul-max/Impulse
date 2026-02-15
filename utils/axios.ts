@@ -1,13 +1,12 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-
-if (!API_BASE_URL) {
-  console.error("❌ VITE_API_URL is not defined");
-}
+const baseURL =
+  import.meta.env.MODE === "production"
+    ? "https://impulse-p9ad.onrender.com/api"
+    : "http://localhost:5000/api";
 
 const instance = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL,
   withCredentials: true,
 });
 
@@ -16,19 +15,26 @@ instance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Prevent infinite retry
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh")
+    ) {
       originalRequest._retry = true;
 
       try {
-        await axios.post(
-          `${API_BASE_URL}/api/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
+        console.log("🔄 Attempting token refresh...");
+
+        await instance.post("/auth/refresh");
+
+        console.log("✅ Token refreshed successfully");
 
         return instance(originalRequest);
       } catch (refreshError) {
+        console.warn("❌ Refresh failed — redirecting to login");
         window.location.href = "/login";
+        return Promise.reject(refreshError);
       }
     }
 
