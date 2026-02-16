@@ -23,12 +23,9 @@ instance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        console.log("🔄 Attempting token refresh...");
         await instance.post("/auth/refresh");
-        console.log("✅ Token refreshed successfully");
         return instance(originalRequest);
       } catch (refreshError) {
-        console.warn("❌ Refresh failed — redirecting to login");
         window.location.href = "/login";
         return Promise.reject(refreshError);
       }
