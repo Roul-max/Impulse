@@ -1,12 +1,8 @@
 import axios from "axios";
 
-const baseURL =
-  import.meta.env.MODE === "production"
-    ? "https://impulse-p9ad.onrender.com/api"
-    : "http://localhost:5000/api";
-
+// ✅ Always use environment variable
 const instance = axios.create({
-  baseURL,
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -15,7 +11,6 @@ instance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Prevent infinite retry
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
