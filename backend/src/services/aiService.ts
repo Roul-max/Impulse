@@ -1,5 +1,4 @@
 import { GoogleGenAI } from "@google/genai";
-import logger from "../utils/logger";
 import { Product } from "../models/Product";
 
 class AiService {
@@ -8,11 +7,15 @@ class AiService {
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
 
+    // 🔎 Debug environment variable (safe)
     if (apiKey) {
+      console.log("[AI] GEMINI_API_KEY detected");
+      console.log("[AI] Key starts with:", apiKey.substring(0, 6)); // partial only
+
       this.ai = new GoogleGenAI({ apiKey });
-      logger.info("[AI] Gemini initialized successfully");
+      console.log("[AI] Gemini initialized successfully");
     } else {
-      logger.warn("[AI] No GEMINI_API_KEY provided");
+      console.log("[AI] No GEMINI_API_KEY provided");
     }
   }
 
@@ -35,8 +38,8 @@ class AiService {
         lowerQuery.includes("buy")
       ) {
         const products = await Product.find({ isActive: true })
-          .select("name price") // reduce fields
-          .limit(5); // reduce from 20 to 5
+          .select("name price")
+          .limit(5);
 
         productContext = `
 Available products (sample):
@@ -57,7 +60,6 @@ ${productContext}
         contents: userQuery,
         config: {
           systemInstruction,
-          thinkingConfig: { thinkingBudget: 0 },
         },
       });
 
@@ -65,7 +67,13 @@ ${productContext}
 
       return response.text || "No response generated.";
     } catch (error: any) {
-      logger.error(`[AI] Error: ${error.message}`);
+      console.timeEnd("GeminiResponse");
+
+      console.error("🚨 FULL GEMINI ERROR:");
+      console.error(error);
+      console.error("Error message:", error?.message);
+      console.error("Error stack:", error?.stack);
+
       return "AI Service temporarily unavailable.";
     }
   }
