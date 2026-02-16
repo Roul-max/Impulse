@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot, Sparkles, ChevronDown } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '../../utils/cn';
-import axios from '../../utils/axios'; // ✅ ADDED
+import axios from '../../utils/axios';
 
 interface Message {
   id: string;
@@ -12,7 +12,8 @@ interface Message {
 }
 
 export const ShopAssistant = () => {
-  console.log("ShopAssistant mounted");
+  console.log("🟢 ShopAssistant mounted");
+
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
@@ -41,9 +42,15 @@ export const ShopAssistant = () => {
   }, []);
 
   const handleSend = async () => {
-    if (!inputValue.trim()) return;
+    console.log("🔥 handleSend triggered");
+
+    if (!inputValue.trim()) {
+      console.log("⛔ Input empty, returning");
+      return;
+    }
 
     const userText = inputValue;
+    console.log("📤 User message:", userText);
 
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -52,15 +59,20 @@ export const ShopAssistant = () => {
       timestamp: new Date()
     };
 
+    console.log("📝 Adding user message to state");
     setMessages(prev => [...prev, userMsg]);
     setInputValue('');
     setIsThinking(true);
+    console.log("🤔 isThinking = true");
 
     try {
-      // ✅ FIXED: using centralized axios instead of localhost fetch
+      console.log("🌍 Sending POST request to /ai/chat");
+
       const { data } = await axios.post('/ai/chat', {
         message: userText,
       });
+
+      console.log("✅ API Response received:", data);
 
       const aiResponseText = data.text || "Sorry, I couldn't respond.";
 
@@ -71,10 +83,11 @@ export const ShopAssistant = () => {
         timestamp: new Date()
       };
 
+      console.log("🤖 Adding AI message to state");
       setMessages(prev => [...prev, aiMsg]);
 
     } catch (error) {
-      console.error('AI Chat Error:', error);
+      console.error("❌ AI Chat Error:", error);
 
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
@@ -86,6 +99,7 @@ export const ShopAssistant = () => {
       setMessages(prev => [...prev, errorMsg]);
     }
 
+    console.log("🧠 isThinking = false");
     setIsThinking(false);
   };
 
