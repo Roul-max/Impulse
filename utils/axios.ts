@@ -2,7 +2,7 @@ import axios from "axios";
 
 // ✅ Always use environment variable
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "https://impulse-p9ad.onrender.com/api",
   withCredentials: true,
 });
 
