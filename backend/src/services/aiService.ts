@@ -53,7 +53,7 @@ ${productContext}
 `;
 
       const response = await this.ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-flash",
         contents: userQuery,
         config: {
           systemInstruction,
