@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot, Sparkles, ChevronDown } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '../../utils/cn';
+import axios from '../../utils/axios'; // ✅ ADDED
 
 interface Message {
   id: string;
@@ -41,10 +42,12 @@ export const ShopAssistant = () => {
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
+    const userText = inputValue;
+
     const userMsg: Message = {
       id: Date.now().toString(),
       sender: 'user',
-      text: inputValue,
+      text: userText,
       timestamp: new Date()
     };
 
@@ -53,13 +56,11 @@ export const ShopAssistant = () => {
     setIsThinking(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: inputValue }),
+      // ✅ FIXED: using centralized axios instead of localhost fetch
+      const { data } = await axios.post('/ai/chat', {
+        message: userText,
       });
 
-      const data = await response.json();
       const aiResponseText = data.text || "Sorry, I couldn't respond.";
 
       const aiMsg: Message = {
@@ -70,7 +71,10 @@ export const ShopAssistant = () => {
       };
 
       setMessages(prev => [...prev, aiMsg]);
+
     } catch (error) {
+      console.error('AI Chat Error:', error);
+
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
@@ -106,7 +110,7 @@ export const ShopAssistant = () => {
           </button>
         </div>
 
-        {/* Premium AI Button — MOBILE SIZE REDUCED ONLY */}
+        {/* Premium AI Button */}
         <button
           onClick={() => setIsOpen(true)}
           aria-label="Open AI Shopping Assistant"
