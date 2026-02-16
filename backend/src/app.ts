@@ -24,12 +24,15 @@ import aiRoutes from "./routes/aiRoutes";
 
 const app = express();
 
+/* 🔥 REQUIRED FOR RENDER SECURE COOKIES */
+app.set("trust proxy", 1);
+
 /* =======================================================
-   ✅ CORS (MUST BE FIRST)
+   ✅ CORS (Hardcoded to avoid env mismatch)
 ======================================================= */
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "https://impulseind.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
@@ -69,10 +72,10 @@ app.use(
 );
 
 /* =======================================================
-   ✅ Rate Limiting (FIXED)
+   ✅ Rate Limiting (unchanged)
 ======================================================= */
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: process.env.NODE_ENV === "production" ? 500 : 1000,
   standardHeaders: true,
   legacyHeaders: false,
