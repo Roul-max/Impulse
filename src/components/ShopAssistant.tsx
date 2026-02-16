@@ -12,6 +12,7 @@ interface Message {
 }
 
 export const ShopAssistant = () => {
+  console.log("ShopAssistant mounted");
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
