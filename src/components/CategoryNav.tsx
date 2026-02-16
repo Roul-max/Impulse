@@ -40,7 +40,7 @@ const categories = [
     icon: Armchair, 
     path: '/products?category=Home',
     subcategories: ['Furniture', 'Decor', 'Kitchen & Dining', 'Lighting', 'Storage', 'Tools'],
-    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4f9d?q=80&w=800&auto=format&fit=crop'
+    image: 'https://static-assets.business.amazon.com/assets/in/24th-jan/705_Website_Blog_Appliances_1450x664.jpg.transform/1450x664/image.jpg'
   },
   { 
     name: 'Appliances', 
